@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brainrot du jour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #2a1fd6; --bg-deep: #1a1297; --paper: #fff8e7; --ink: #170f4d;
+    --pink: #ff4fa3; --yellow: #ffe14a; --mint: #3be8b0; --radius: 28px;
+    --display: "Bagel Fat One", "Arial Black", Impact, sans-serif;
+    --body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--bg-deep); }
+  body {
+    min-height: 100vh; font-family: var(--body); color: var(--paper);
+    background: radial-gradient(circle at 15% 10%, #4a3dff 0, transparent 40%),
+                radial-gradient(circle at 90% 85%, #6a1fd6 0, transparent 45%), var(--bg);
+    padding: 24px 16px 64px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  header { text-align: center; padding: 8px 0 28px; }
+  h1 {
+    font-family: var(--display); font-weight: 400; font-size: clamp(2.6rem, 9vw, 5.5rem);
+    line-height: .95; color: var(--yellow); text-shadow: 4px 4px 0 var(--pink), 8px 8px 0 var(--ink);
+    transform: rotate(-2deg); display: inline-block;
+  }
+  .date { margin-top: 22px; font-size: 1.05rem; font-weight: 500; opacity: .9; text-transform: capitalize; }
+
+  .notice {
+    max-width: 640px; margin: 0 auto 20px; background: var(--yellow); color: var(--ink);
+    border: 4px solid var(--ink); border-radius: 16px; padding: 10px 16px; font-weight: 500; font-size: .92rem;
+  }
+
+  .card {
+    background: var(--paper); color: var(--ink); border: 5px solid var(--ink); border-radius: var(--radius);
+    box-shadow: 10px 10px 0 var(--ink); display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); overflow: hidden;
+  }
+  .stage {
+    position: relative; min-height: 400px; display: grid; place-items: center;
+    background: var(--stage, var(--pink)); border-right: 5px solid var(--ink); overflow: hidden;
+  }
+  .stage::before {
+    content: ""; position: absolute; inset: -50%;
+    background: repeating-conic-gradient(rgba(255,255,255,.18) 0 10deg, transparent 10deg 20deg);
+    animation: rays 40s linear infinite;
+  }
+  .shadow { position: absolute; bottom: 56px; width: 150px; height: 22px; border-radius: 50%; background: rgba(23,15,77,.35); animation: shadow 1.2s ease-in-out infinite; }
+  .avatar {
+    position: relative; width: min(280px, 70%); aspect-ratio: 1; display: grid; place-items: center;
+    font-size: clamp(7rem, 22vw, 11rem); line-height: 1; user-select: none; cursor: pointer;
+    filter: drop-shadow(0 8px 0 rgba(23,15,77,.25));
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+  .avatar:focus-visible { outline: 4px dashed var(--ink); outline-offset: 12px; border-radius: 20px; }
+  .avatar.pop { animation: pop .5s cubic-bezier(.3, 1.8, .5, 1) !important; }
+  .avatar.talking { animation: talk .28s ease-in-out infinite alternate !important; }
+
+  .a-bounce { animation: bounce 1.2s ease-in-out infinite; }
+  .a-wobble { animation: wobble 1.6s ease-in-out infinite; }
+  .a-spin   { animation: spin 3.2s linear infinite; }
+  .a-shake  { animation: shake .45s linear infinite; }
+  .a-float  { animation: float 3s ease-in-out infinite; }
+  .a-pulse  { animation: pulse 1s ease-in-out infinite; }
+
+  @keyframes rays { to { transform: rotate(360deg); } }
+  @keyframes shadow { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(.6); opacity: .5; } }
+  @keyframes bounce { 0%,100% { transform: translateY(0) scale(1.05, .95); } 50% { transform: translateY(-46px) scale(.96, 1.06); } }
+  @keyframes wobble { 0%,100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes shake { 0% { transform: translate(3px, 1px) rotate(0); } 25% { transform: translate(-3px, -2px) rotate(-3deg); } 50% { transform: translate(2px, 3px) rotate(3deg); } 75% { transform: translate(-2px, 1px) rotate(-2deg); } 100% { transform: translate(3px, -2px) rotate(2deg); } }
+  @keyframes float { 0%,100% { transform: translate(-14px, 8px) rotate(-4deg); } 50% { transform: translate(14px, -22px) rotate(4deg); } }
+  @keyframes pulse { 0%,100% { transform: scale(.92); } 50% { transform: scale(1.14); } }
+  @keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.4) rotate(-8deg); } 100% { transform: scale(1); } }
+  @keyframes talk { from { transform: scale(1, .94) rotate(-2deg); } to { transform: scale(1, 1.08) rotate(2deg); } }
+
+  .hint { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-size: .85rem; font-weight: 700; opacity: .75; }
+
+  .info { padding: 32px 30px 30px; display: flex; flex-direction: column; gap: 16px; }
+  h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 5vw, 3rem); line-height: 1; }
+  .desc { font-size: 1.08rem; line-height: 1.55; max-width: 60ch; }
+
+  .voice {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: 10px;
+    font: 700 1rem var(--body); color: var(--ink); background: var(--yellow);
+    border: 4px solid var(--ink); border-radius: 999px; padding: 10px 20px; cursor: pointer;
+    box-shadow: 4px 4px 0 var(--ink); transition: transform .12s, box-shadow .12s;
+  }
+  .voice:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
+  .voice:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+  .voice:focus-visible { outline: 3px solid var(--pink); outline-offset: 3px; }
+  .voice[hidden] { display: none; }
+  .voice-info { margin-top: -6px; font-size: .85rem; opacity: .7; }
+  .voice-info.warn { opacity: 1; font-weight: 700; color: #c2185b; }
+
+  .chaos { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+  .bolts { display: flex; gap: 4px; font-size: 1.4rem; }
+  .bolts span.off { filter: grayscale(1); opacity: .25; }
+
+  .rate { margin-top: 6px; padding-top: 18px; border-top: 4px dashed var(--ink); }
+  .rate h3 { font-size: 1.05rem; margin-bottom: 10px; }
+  .stars { display: flex; gap: 6px; }
+  .star {
+    appearance: none; border: 0; background: none; cursor: pointer; font-size: 2.6rem; line-height: 1;
+    padding: 2px; color: #cfc7e8; -webkit-text-stroke: 2px var(--ink); transition: transform .15s, color .15s;
+  }
+  .star.on { color: var(--yellow); }
+  .star:not(:disabled):hover { transform: scale(1.25) rotate(-8deg); }
+  .star:disabled { cursor: not-allowed; }
+  .star:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; border-radius: 8px; }
+  .verdict { margin-top: 8px; min-height: 1.5em; font-weight: 700; }
+
+  .result {
+    margin-top: 14px; background: var(--ink); color: var(--paper); border-radius: 18px;
+    padding: 14px 18px; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  }
+  .result .big { font-family: var(--display); font-size: 2.6rem; line-height: 1; color: var(--yellow); }
+  .result .small { font-size: .95rem; opacity: .9; }
+  .next { margin-top: 2px; font-size: .9rem; opacity: .75; }
+
+  .history { margin-top: 44px; }
+  .history h3 { font-family: var(--display); font-weight: 400; font-size: 1.7rem; color: var(--yellow); margin-bottom: 14px; }
+  .days { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .day { background: var(--paper); color: var(--ink); border: 4px solid var(--ink); border-radius: 20px; box-shadow: 5px 5px 0 var(--ink); padding: 12px; text-align: center; }
+  .day .pic { height: 64px; display: grid; place-items: center; font-size: 2.4rem; }
+  .day .pic img { max-height: 64px; max-width: 100%; object-fit: contain; }
+  .day .n { font-weight: 700; font-size: .92rem; line-height: 1.2; margin-top: 4px; }
+  .day .d { font-size: .8rem; opacity: .7; margin-top: 2px; text-transform: capitalize; }
+  .day .r { margin-top: 6px; font-weight: 700; font-size: .95rem; }
+  .day .r.none { font-weight: 400; font-size: .8rem; opacity: .6; }
+  footer { margin-top: 48px; text-align: center; font-size: .85rem; opacity: .7; }
+
+  @media (max-width: 760px) {
+    .card { grid-template-columns: 1fr; }
+    .stage { border-right: 0; border-bottom: 5px solid var(--ink); min-height: 340px; }
+    .info { padding: 24px 20px; }
+    .star { font-size: 2.3rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Brainrot<br>du jour</h1>
+    <p class="date" id="date"></p>
+  </header>
+
+  <p class="notice" id="notice" hidden></p>
+
+  <main>
+    <article class="card">
+      <div class="stage" id="stage">
+        <div class="shadow"></div>
+        <div class="avatar" id="avatar" role="button" tabindex="0" aria-label="Fais réagir le personnage"></div>
+        <p class="hint">Clique sur lui, il adore ça.</p>
+      </div>
+
+      <div class="info">
+        <h2 id="name">Chargement…</h2>
+        <p class="desc" id="desc" lang="it"></p>
+        <button type="button" class="voice" id="voice" hidden><span id="voiceIcon">🔊</span><span id="voiceLabel">Écouter la description</span></button>
+        <p class="voice-info" id="voiceInfo" hidden></p>
+        <div class="chaos">
+          <span>Niveau de chaos</span>
+          <span class="bolts" id="bolts" aria-hidden="true"></span>
+        </div>
+
+        <section class="rate" aria-labelledby="rate-title">
+          <h3 id="rate-title">Ta note pour aujourd'hui</h3>
+          <div class="stars" id="stars" role="radiogroup" aria-label="Note sur 5"></div>
+          <p class="verdict" id="verdict"></p>
+          <div class="result" id="result"></div>
+          <p class="next" id="next"></p>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  <section class="history">
+    <h3>Les 7 derniers jours</h3>
+    <ol class="days" id="days"></ol>
+  </section>
+
+  <footer>Un nouveau brainrot chaque jour à minuit. La note moyenne de tout le monde est dévoilée à 20 h (heure de Paris).</footer>
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURATION
+   Colle ici l'adresse de ta base Firebase Realtime Database,
+   sans slash final. Exemple :
+   "https://mon-projet-default-rtdb.europe-west1.firebasedatabase.app"
+   Laisse vide pour tester en local (les notes ne sont alors pas partagées).
+   ============================================================ */
+const FIREBASE_URL = "https://brainrot-9c5f9-default-rtdb.europe-west1.firebasedatabase.app";
+
+const REVEAL_HOUR = 20;          // heure (Paris) à laquelle la moyenne est dévoilée
+const TZ = "Europe/Paris";
+
+/* ---------- Paramètres de test : ?decalage=1  ?heure=20 ---------- */
+const params = new URLSearchParams(location.search);
+const OFFSET = parseInt(params.get("decalage") || "0", 10) || 0;
+const FORCE_HOUR = params.has("heure") ? parseInt(params.get("heure"), 10) : null;
+
+const $ = id => document.getElementById(id);
+
+/* ---------- Date / heure de Paris ---------- */
+function parisNow() {
+  const f = new Intl.DateTimeFormat("fr-FR", {
+    timeZone: TZ, year: "numeric", month: "numeric", day: "numeric",
+    hour: "numeric", minute: "numeric", hourCycle: "h23"
+  });
+  const p = {};
+  f.formatToParts(new Date()).forEach(x => { if (x.type !== "literal") p[x.type] = parseInt(x.value, 10); });
+  if (FORCE_HOUR !== null && !isNaN(FORCE_HOUR)) p.hour = FORCE_HOUR;
+  return p;
+}
+const dayNumberOf = p => Math.floor(Date.UTC(p.year, p.month - 1, p.day) / 86400000);
+const dateOfDayNumber = n => { const d = new Date(n * 86400000); return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()); };
+const fmt = (date, long) => date.toLocaleDateString("fr-FR", long
+  ? { weekday: "long", day: "numeric", month: "long", year: "numeric" }
+  : { weekday: "short", day: "numeric", month: "short" });
+const hm = mins => Math.floor(mins / 60) + " h " + String(mins % 60).padStart(2, "0");
+
+/* ---------- Identifiant anonyme (aucun compte requis) ---------- */
+function getUid() {
+  try {
+    let id = localStorage.getItem("brainrot-uid");
+    if (!id) {
+      id = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36)).replace(/[^a-zA-Z0-9-]/g, "");
+      localStorage.setItem("brainrot-uid", id);
+    }
+    return id;
+  } catch (e) { return "anon-" + Math.random().toString(36).slice(2); }
+}
+const UID = getUid();
+
+/* ---------- Stockage des votes ---------- */
+function localVotes(n) {
+  const out = {};
+  try { const v = parseInt(localStorage.getItem("brainrot-note-" + n), 10); if (v >= 1 && v <= 5) out[UID] = v; } catch (e) {}
+  return out;
+}
+
+async function fetchVotes(n) {
+  if (!FIREBASE_URL) return localVotes(n);
+  try {
+    const r = await fetch(FIREBASE_URL + "/ratings/" + n + ".json", { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    return (await r.json()) || {};
+  } catch (e) { return null; }   // null = erreur réseau
+}
+
+async function sendVote(n, v) {
+  try { localStorage.setItem("brainrot-note-" + n, String(v)); } catch (e) {}
+  if (!FIREBASE_URL) return true;
+  try {
+    const r = await fetch(FIREBASE_URL + "/ratings/" + n + "/" + UID + ".json", {
+      method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(v)
+    });
+    return r.ok;
+  } catch (e) { return false; }
+}
+
+function summarize(votes) {
+  const vals = Object.values(votes || {}).filter(x => Number.isInteger(x) && x >= 1 && x <= 5);
+  const count = vals.length;
+  return { count, avg: count ? vals.reduce((a, b) => a + b, 0) / count : 0 };
+}
+const fr1 = x => x.toFixed(1).replace(".", ",");
+
+/* ---------- État ---------- */
+let BRAINROTS = [];
+let today = 0;
+let current = null;
+let myVote = 0;
+let votes = {};
+
+const pickFor = n => BRAINROTS[((n % BRAINROTS.length) + BRAINROTS.length) % BRAINROTS.length];
+const isRevealed = () => parisNow().hour >= REVEAL_HOUR;
+
+/* ---------- Affichage du personnage ---------- */
+function setPicture(el, b) {
+  el.textContent = "";
+  const img = document.createElement("img");
+  img.alt = b.name;
+  img.src = b.image;
+  img.addEventListener("error", () => { el.textContent = b.emoji; }, { once: true });
+  el.appendChild(img);
+}
+
+function renderCharacter() {
+  $("date").textContent = fmt(dateOfDayNumber(today), true);
+  $("stage").style.setProperty("--stage", current.color);
+  const av = $("avatar");
+  setPicture(av, current);
+  av.className = "avatar a-" + current.anim;
+  $("name").textContent = current.name;
+  $("desc").textContent = current.desc;
+  document.title = current.name + " · Brainrot du jour";
+
+  const bolts = $("bolts");
+  bolts.textContent = "";
+  for (let i = 1; i <= 5; i++) {
+    const s = document.createElement("span");
+    s.textContent = "⚡";
+    if (i > current.chaos) s.className = "off";
+    bolts.appendChild(s);
+  }
+  bolts.title = current.chaos + " sur 5";
+}
+
+/* ---------- Voix ---------- */
+const synth = window.speechSynthesis;
+let speaking = false;
+
+const SPEECH_SPEED = 1.35;   // vitesse de lecture (1 = normal, 1.35 = nettement plus rapide)
+
+function italianVoice() {
+  const vs = synth.getVoices();
+  const it = vs.filter(v => v.lang && v.lang.toLowerCase().replace("_", "-").startsWith("it"));
+  // On préfère les voix de meilleure qualité quand elles existent
+  return it.find(v => /google|alice|luca|federica|elsa|isabella|diego|paola/i.test(v.name))
+      || it.find(v => v.lang === "it-IT") || it[0] || null;
+}
+
+function setSpeaking(on) {
+  speaking = on;
+  $("voiceIcon").textContent = on ? "⏹️" : "🔊";
+  $("voiceLabel").textContent = on ? "Arrêter" : "Écouter la description";
+  const av = $("avatar");
+  if (on) av.classList.add("talking"); else av.classList.remove("talking");
+}
+
+/* Fichier audio enregistré (identique sur tous les téléphones).
+   Par défaut : audio/<nom-de-l-image>.mp3, ou le champ "audio" du JSON. */
+let player = null;
+let audioOk = false;
+function audioFor(b) {
+  if (b.audio) return b.audio;
+  const base = (b.image || "").split("/").pop().replace(/\.[a-z0-9]+$/i, "");
+  return base ? "audio/" + base + ".mp3" : null;
+}
+
+function stopAll() {
+  if (player) { player.pause(); player.currentTime = 0; }
+  if (synth) synth.cancel();
+  setSpeaking(false);
+}
+
+function toggleSpeech() {
+  if (speaking) { stopAll(); return; }
+  stopAll();
+  const src = audioFor(current);
+  if (!src) return speakSynth();
+  player = new Audio(src);
+  player.preservesPitch = true;
+  player.playbackRate = SPEECH_SPEED;
+  player.onplaying = () => setSpeaking(true);
+  player.onended = () => setSpeaking(false);
+  player.onerror = () => { player = null; speakSynth(); };   // pas de fichier : voix du téléphone
+  player.play().catch(() => {});
+}
+
+function speakSynth() {
+  if (!synth) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(current.name + ". " + current.desc);
+  u.lang = "it-IT";
+  const v = italianVoice();
+  if (v) u.voice = v;
+  u.pitch = current.pitch || 1;
+  u.rate = Math.min(2, (current.rate || 1) * SPEECH_SPEED);
+  u.onstart = () => setSpeaking(true);
+  u.onend = u.onerror = () => setSpeaking(false);
+  synth.speak(u);
+}
+
+function showVoiceInfo() {
+  const info = $("voiceInfo");
+  if (audioOk) { info.hidden = true; return; }    // fichier audio dispo : pas besoin des voix du téléphone
+  if (!synth || !synth.getVoices().length) return; // liste pas encore chargée
+  const v = italianVoice();
+  info.hidden = false;
+  info.textContent = v
+    ? "Voix : " + v.name + " (" + v.lang + ")"
+    : "Aucune voix italienne sur cet appareil : la lecture se fera avec l'accent par défaut. Installe une voix italienne dans les réglages de ton appareil.";
+  info.classList.toggle("warn", !v);
+}
+
+function initVoice() {
+  $("voice").hidden = false;
+  $("voice").addEventListener("click", toggleSpeech);
+  window.addEventListener("pagehide", stopAll);
+  const src = audioFor(current);
+  if (src) fetch(src, { method: "HEAD" }).then(r => { audioOk = r.ok; showVoiceInfo(); }).catch(() => {});
+  if (!synth || typeof SpeechSynthesisUtterance === "undefined") return;
+  synth.getVoices();
+  // Chrome et Android chargent la liste des voix un peu après l'ouverture de la page
+  synth.addEventListener ? synth.addEventListener("voiceschanged", showVoiceInfo) : (synth.onvoiceschanged = showVoiceInfo);
+  showVoiceInfo();
+  setTimeout(showVoiceInfo, 1500);
+  window.addEventListener("pagehide", () => synth.cancel());
+}
+
+/* ---------- Notation ---------- */
+const VERDICTS = ["", "Aïe. Ce brainrot n'a pas convaincu.", "Bof, on a déjà vu mieux.", "Correct, ni génial ni honteux.", "Très bon, il a du potentiel.", "Chef-d'œuvre absolu. Cerveau officiellement fondu."];
+
+function renderStars() {
+  const locked = isRevealed();
+  const box = $("stars");
+  box.textContent = "";
+  for (let i = 1; i <= 5; i++) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "star" + (i <= myVote ? " on" : "");
+    b.textContent = "★";
+    b.disabled = locked;
+    b.setAttribute("role", "radio");
+    b.setAttribute("aria-checked", String(i === myVote));
+    b.setAttribute("aria-label", i + " sur 5");
+    b.addEventListener("click", () => vote(i));
+    box.appendChild(b);
+  }
+  $("verdict").textContent = locked
+    ? (myVote ? "Ta note : " + myVote + " / 5. " + VERDICTS[myVote] : "Les votes sont clos pour aujourd'hui.")
+    : (myVote ? VERDICTS[myVote] : "Pas encore noté. À toi de juger !");
+}
+
+async function vote(v) {
+  myVote = v;
+  votes[UID] = v;
+  renderStars();
+  renderResult();
+  const ok = await sendVote(today, v);
+  if (!ok) $("verdict").textContent = "Ta note n'a pas pu être envoyée. Vérifie ta connexion et réessaie.";
+  else refreshVotes();
+}
+
+function renderResult() {
+  const box = $("result");
+  const { count, avg } = summarize(votes);
+  box.textContent = "";
+  const big = document.createElement("span"); big.className = "big";
+  const small = document.createElement("span"); small.className = "small";
+  if (isRevealed()) {
+    big.textContent = count ? fr1(avg) + " / 5" : "—";
+    small.textContent = count ? "Note moyenne de " + count + " votant" + (count > 1 ? "s" : "") : "Personne n'a voté aujourd'hui.";
+  } else {
+    big.textContent = "🔒";
+    small.textContent = count
+      ? count + " vote" + (count > 1 ? "s" : "") + " pour l'instant. La moyenne sera dévoilée à " + REVEAL_HOUR + " h."
+      : "Sois le premier à voter. La moyenne sera dévoilée à " + REVEAL_HOUR + " h.";
+  }
+  box.append(big, small);
+}
+
+function renderCountdown() {
+  const p = parisNow();
+  const minsNow = p.hour * 60 + p.minute;
+  let txt;
+  if (OFFSET || FORCE_HOUR !== null) txt = "Mode test actif.";
+  else if (p.hour < REVEAL_HOUR) txt = "Moyenne dévoilée dans " + hm(REVEAL_HOUR * 60 - minsNow) + ". Prochain brainrot dans " + hm(1440 - minsNow) + ".";
+  else txt = "Prochain brainrot dans " + hm(1440 - minsNow) + ".";
+  $("next").textContent = txt;
+}
+
+async function refreshVotes() {
+  const data = await fetchVotes(today);
+  if (data === null) { $("notice").hidden = false; $("notice").textContent = "Impossible de joindre la base de votes pour le moment."; return; }
+  votes = data;
+  if (votes[UID]) myVote = votes[UID];
+  renderStars();
+  renderResult();
+}
+
+/* ---------- Historique ---------- */
+async function renderHistory() {
+  const list = $("days");
+  list.textContent = "";
+  for (let i = 0; i < 7; i++) {
+    const n = today - i;
+    const b = pickFor(n);
+    const li = document.createElement("li"); li.className = "day";
+    const pic = document.createElement("div"); pic.className = "pic"; setPicture(pic, b);
+    const nm = document.createElement("div"); nm.className = "n"; nm.textContent = b.name;
+    const d = document.createElement("div"); d.className = "d"; d.textContent = i === 0 ? "Aujourd'hui" : fmt(dateOfDayNumber(n), false);
+    const r = document.createElement("div"); r.className = "r none"; r.textContent = "…";
+    li.append(pic, nm, d, r);
+    list.appendChild(li);
+
+    const canShow = i > 0 || isRevealed();
+    if (!canShow) { r.textContent = "Moyenne à " + REVEAL_HOUR + " h"; continue; }
+    fetchVotes(n).then(data => {
+      const s = summarize(data || {});
+      if (s.count) { r.className = "r"; r.textContent = "★ " + fr1(s.avg) + " (" + s.count + ")"; }
+      else r.textContent = "Aucun vote";
+    });
+  }
+}
+
+/* ---------- Clic sur le personnage ---------- */
+function bindAvatar() {
+  const av = $("avatar");
+  const react = () => { av.classList.remove("pop"); void av.offsetWidth; av.classList.add("pop"); setTimeout(() => av.classList.remove("pop"), 520); };
+  av.addEventListener("click", react);
+  av.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); react(); } });
+}
+
+/* ---------- Démarrage ---------- */
+async function init() {
+  try {
+    const r = await fetch("brainrots.json");
+    BRAINROTS = await r.json();
+  } catch (e) {
+    $("name").textContent = "Impossible de charger la liste";
+    $("desc").textContent = "Le fichier brainrots.json est introuvable. Si tu ouvres la page directement depuis ton disque, lance plutôt un petit serveur local (python -m http.server) ou mets le site en ligne.";
+    return;
+  }
+  today = dayNumberOf(parisNow()) + OFFSET;
+  current = pickFor(today);
+  try { myVote = parseInt(localStorage.getItem("brainrot-note-" + today), 10) || 0; } catch (e) {}
+  if (myVote) votes[UID] = myVote;
+
+  if (!FIREBASE_URL) {
+    $("notice").hidden = false;
+    $("notice").textContent = "Mode local : la base partagée n'est pas encore configurée, les notes ne sont visibles que sur cet appareil.";
+  }
+
+  renderCharacter();
+  renderStars();
+  renderResult();
+  renderCountdown();
+  renderHistory();
+  bindAvatar();
+  initVoice();
+  refreshVotes();
+
+  setInterval(() => { renderCountdown(); }, 30000);
+  setInterval(() => { refreshVotes(); renderHistory(); }, 60000);
+}
+init();
+</script>
+</body>
+</html>
