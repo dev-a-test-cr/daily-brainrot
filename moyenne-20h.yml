@@ -1,0 +1,21 @@
+name: Moyenne de 20h
+
+on:
+  schedule:
+    - cron: "0 18 * * *"   # 20 h à Paris en heure d'été
+    - cron: "0 19 * * *"   # 20 h à Paris en heure d'hiver
+  workflow_dispatch:        # lancement manuel pour tester
+
+jobs:
+  envoyer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Envoyer la moyenne du jour
+        env:
+          FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: node scripts/send-average.js
